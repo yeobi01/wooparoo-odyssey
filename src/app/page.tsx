@@ -103,11 +103,15 @@ const searchCounterWooparoo = (
 
     const mainProperties = getMainProperties(extractedValues);
     const subProperties = getSubProperties(extractedValues[0]);
+
+    // mvp alert으로 일단 알려주기 대충..
+    let alertData: string = "일단 대충 보여드립니다...\n\n";
     for (const mainProperty of mainProperties) {
       for (const subProperty of subProperties) {
-        console.log(mainProperty + " " + subProperty);
+        alertData += mainProperty + " " + subProperty + "\n";
       }
     }
+    window.alert(alertData);
   }
   if (secondMatches) {
     const extractedValues = secondMatches[1]
@@ -135,6 +139,8 @@ export default function Home() {
       <div className="flex flex-col items-center">
         <h1 className="text-[2rem] font-bold">우파루 오디세이</h1>
         <h1 className="text-[2rem] leading-6 font-bold">결투 카운터 찾기</h1>
+        <div className="h-4" />
+        <div>아직은 첫 번째 칸만 사용해주세요..</div>
         <div className="h-6" />
 
         {/* 상대방 우파루 찾는 검색바 */}
