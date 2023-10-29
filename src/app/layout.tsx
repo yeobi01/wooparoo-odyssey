@@ -3,8 +3,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import SEO from "@/app/seo";
+import PWA from "@/app/pwa";
 
-const inter = Inter({ subsets: ["latin"] });
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 export default function RootLayout({
   children,
@@ -14,7 +16,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <SEO />
-      <body className={inter.className}>{children}</body>
+      <PWA />
+      <body className="flex flex-col">
+        <Header />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

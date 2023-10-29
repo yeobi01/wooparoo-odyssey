@@ -1,0 +1,33 @@
+{
+  "theme_color": "#f69435",
+  "background_color": "#f69435",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "name": "\uc6b0\ud30c\ub8e8DB",
+  "short_name": "\uc6b0\ud30c\ub8e8",
+  "description": "\uc6b0\ud30c\ub8e8 \uc624\ub527\uc138\uc774\ub97c \ud50c\ub808\uc774\ud558\ub294\ub370 \ub3c4\uc6c0\uc774 \ub418\ub294 \uc0ac\uc774\ub4dc \ud504\ub85c\uc81d\ud2b8",
+  "icons": [
+    {
+      "src": "./icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
