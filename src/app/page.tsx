@@ -2,10 +2,14 @@
 
 import { useState } from "react";
 
+import { 속성Type } from "@/types/woparoo_type";
+
+import wooparooData from "@/assets/database/data.json";
+
 import SelectBox from "@/components/antd/selectBox";
 import WooparooSearchButton from "@/components/antd/wooparooSearchButton";
 
-const Property = [
+const 속성종류 = [
   "숲",
   "땅",
   "불",
@@ -18,113 +22,58 @@ const Property = [
   "황금",
 ];
 
-const strongPropertiesMap = [
-  ["물", "빛"],
-  ["천둥", "어둠"],
-  ["숲", "바람", "얼음"],
-  ["불"],
-  ["물", "황금"],
-  ["땅", "천둥"],
-  ["숲"],
-  ["천둥", "어둠"],
-  ["빛", "황금"],
-  ["땅", "얼음"],
-];
+const 강한속성: 속성Type = {
+  숲: ["물", "빛"],
+  땅: ["천둥", "어둠"],
+  불: ["숲", "바람", "얼음"],
+  물: ["불"],
+  천둥: ["물", "황금"],
+  바람: ["땅", "천둥"],
+  얼음: ["숲"],
+  빛: ["천둥", "어둠"],
+  어둠: ["빛", "황금"],
+  황금: ["땅", "얼음"],
+};
 
-const weakPropertiesMap = [
-  ["불", "얼음"],
-  ["바람", "황금"],
-  ["물"],
-  ["숲", "천둥"],
-  ["땅", "바람", "빛"],
-  ["불"],
-  ["불", "황금"],
-  ["숲", "어둠"],
-  ["땅", "빛"],
-  ["천둥", "어둠"],
-];
+const 약한속성: 속성Type = {
+  숲: ["불", "얼음"],
+  땅: ["바람", "황금"],
+  불: ["물"],
+  물: ["숲", "천둥"],
+  천둥: ["땅", "바람", "빛"],
+  바람: ["불"],
+  얼음: ["불", "황금"],
+  빛: ["숲", "어둠"],
+  어둠: ["땅", "빛"],
+  황금: ["천둥", "어둠"],
+};
 
-const getMainProperties = (counterpartProperties: string[]) => {
-  let mainProperties: string[] = Property.slice();
+const 가능한_주속성_배열_얻기 = (상대속성_배열: string[]) => {
+  let 가능한_주속성_배열: string[] = 속성종류.slice();
 
-  for (const counterpartProperty of counterpartProperties) {
-    const counterpartPropertyIndex = Property.indexOf(counterpartProperty);
-    if (counterpartPropertyIndex === -1) continue;
+  for (const 상대속성 of 상대속성_배열) {
+    const 상대가_강한속성_배열 = 강한속성[상대속성];
 
-    const counterpartPropertyStrongProperties =
-      strongPropertiesMap[counterpartPropertyIndex];
-
-    for (const counterpartPropertyStrongProperty of counterpartPropertyStrongProperties) {
-      mainProperties = mainProperties.filter(
-        (mainProperty) => mainProperty !== counterpartPropertyStrongProperty
+    for (const 상대가_강한속성 of 상대가_강한속성_배열) {
+      가능한_주속성_배열 = 가능한_주속성_배열.filter(
+        (가능한_주속성) => 가능한_주속성 !== 상대가_강한속성
       );
     }
   }
 
-  console.log("mainProperties");
-  console.log(mainProperties);
-
-  return mainProperties;
+  return 가능한_주속성_배열;
 };
 
-const getSubProperties = (counterpartMainProperty: string) => {
-  let subProperties: string[] = [];
+const 가능한_부속성_배열_얻기 = (상대_주속성: string) => {
+  let 가능한_부속성_배열: string[] = [];
 
-  const counterpartPropertyIndex = Property.indexOf(counterpartMainProperty);
-  if (counterpartPropertyIndex === -1) return "";
+  const 상대한테_강한속성_배열 = 약한속성[상대_주속성];
 
-  const counterpartPropertyStrongProperties =
-    weakPropertiesMap[counterpartPropertyIndex];
-
-  for (const counterpartPropertyStrongProperty of counterpartPropertyStrongProperties) {
-    subProperties.push(counterpartPropertyStrongProperty);
+  for (const 상대한테_강한속성 of 상대한테_강한속성_배열) {
+    가능한_부속성_배열.push(상대한테_강한속성);
   }
 
-  console.log("subProperties");
-  console.log(subProperties);
-
-  return subProperties;
-};
-
-const searchCounterWooparoo = (
-  firstSelected: string | undefined,
-  secondSelected: string | undefined,
-  thirdSelected: string | undefined
-) => {
-  const firstMatches = firstSelected?.match(/\(([^)]+)\)/);
-  const secondMatches = secondSelected?.match(/\(([^)]+)\)/);
-  const thirdMatches = thirdSelected?.match(/\(([^)]+)\)/);
-
-  if (firstMatches) {
-    const extractedValues = firstMatches[1]
-      .split(", ")
-      .map((value) => value.trim());
-    console.log(extractedValues);
-
-    const mainProperties = getMainProperties(extractedValues);
-    const subProperties = getSubProperties(extractedValues[0]);
-
-    // mvp alert으로 일단 알려주기 대충..
-    let alertData: string = "일단 대충 보여드립니다...\n\n";
-    for (const mainProperty of mainProperties) {
-      for (const subProperty of subProperties) {
-        alertData += mainProperty + " " + subProperty + "\n";
-      }
-    }
-    window.alert(alertData);
-  }
-  if (secondMatches) {
-    const extractedValues = secondMatches[1]
-      .split(", ")
-      .map((value) => value.trim());
-    console.log(extractedValues);
-  }
-  if (thirdMatches) {
-    const extractedValues = thirdMatches[1]
-      .split(", ")
-      .map((value) => value.trim());
-    console.log(extractedValues);
-  }
+  return 가능한_부속성_배열;
 };
 
 export default function Home() {
@@ -132,7 +81,53 @@ export default function Home() {
   const [secondSelected, setSecondSelected] = useState<string>();
   const [thirdSelected, setThirdSelected] = useState<string>();
 
-  const [counterWooparoo, setCounterWooparoo] = useState<string[]>();
+  const [counterWooparoo, setCounterWooparoo] = useState<string[][]>([]);
+
+  const 카운터_우파루_찾기 = (
+    첫번째_우파루: string | undefined,
+    두번째_우파루: string | undefined,
+    세번째_우파루: string | undefined
+  ) => {
+    const 첫번째_우파루_속성_배열 = 첫번째_우파루?.match(/\(([^)]+)\)/);
+    const 두번째_우파루_속성_배열 = 두번째_우파루?.match(/\(([^)]+)\)/);
+    const 세번째_우파루_속성_배열 = 세번째_우파루?.match(/\(([^)]+)\)/);
+
+    const 강한_우파루_얻기 = (
+      우파루_속성_배열_인자: RegExpMatchArray | null | undefined
+    ): string[] => {
+      let 강한_우파루_배열: string[] = [];
+
+      if (우파루_속성_배열_인자) {
+        const 우파루_속성_배열 = 우파루_속성_배열_인자[1]
+          .split(", ")
+          .map((value) => value.trim());
+        console.log(우파루_속성_배열);
+
+        const 가능한_주속성_배열 = 가능한_주속성_배열_얻기(우파루_속성_배열);
+        const 가능한_부속성_배열 = 가능한_부속성_배열_얻기(우파루_속성_배열[0]);
+
+        for (const 가능한_주속성 of 가능한_주속성_배열) {
+          for (const 가능한_부속성 of 가능한_부속성_배열) {
+            wooparooData.forEach((wooparoo) => {
+              if (
+                wooparoo.메인 === 가능한_주속성 &&
+                (wooparoo.보조1 === 가능한_부속성 ||
+                  wooparoo.보조2 === 가능한_부속성)
+              ) {
+                강한_우파루_배열.push(wooparoo.이름);
+              }
+            });
+          }
+        }
+      }
+      return 강한_우파루_배열;
+    };
+    setCounterWooparoo([
+      강한_우파루_얻기(첫번째_우파루_속성_배열),
+      강한_우파루_얻기(두번째_우파루_속성_배열),
+      강한_우파루_얻기(세번째_우파루_속성_배열),
+    ]);
+  };
 
   return (
     <main className="flex items-center justify-center py-12 px-24">
@@ -165,16 +160,23 @@ export default function Home() {
         {/* 우파루 클릭 버튼 */}
         <WooparooSearchButton
           onClick={() => {
-            searchCounterWooparoo(firstSelected, secondSelected, thirdSelected);
+            카운터_우파루_찾기(firstSelected, secondSelected, thirdSelected);
           }}
         />
         <div className="h-4" />
 
         {/* 카운터 우파루 출력 */}
         <div>
-          {counterWooparoo?.map((wooparoo, idx) => (
-            <div key={idx}>{wooparoo}</div>
-          ))}
+          {counterWooparoo?.map((wooparoos, idx) => {
+            return (
+              <div key={idx} className="p-2 border">
+                <div>{idx + 1}번째 우파루 카운터</div>
+                {wooparoos?.map((wooparoo, idx2) => {
+                  return <div key={idx2}>{wooparoo}</div>;
+                })}
+              </div>
+            );
+          })}
         </div>
       </div>
     </main>
